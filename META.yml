@@ -1,0 +1,33 @@
+---
+abstract: 'Extend your attribute interfaces'
+author:
+  - 'NAKAGAWA Masaki <masaki@cpan.org>'
+build_requires:
+  Test::Data::Scalar: 0
+  Test::Deep: 0
+  Test::More: 0
+  ok: 0
+distribution_type: module
+generated_by: 'Module::Install version 0.79'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: MouseX-AttributeHelpers
+no_index:
+  directory:
+    - inc
+    - t
+recommends:
+  Any::Moose: 0.05
+  Class::Method::Modifiers::Fast: 0
+requires:
+  Class::Method::Modifiers: 0
+  Filter::Util::Call: 0
+  Mouse: 0.19
+  Mouse::Meta::Attribute: 0
+  Mouse::Util::TypeConstraints: 0
+  perl: 5.8.1
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.01
