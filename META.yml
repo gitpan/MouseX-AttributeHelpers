@@ -6,7 +6,7 @@ build_requires:
   Test::Data::Scalar: 0
   Test::Deep: 0
   Test::More: 0
-  ok: 0
+  Test::UseAllModules: 0
 distribution_type: module
 generated_by: 'Module::Install version 0.79'
 license: perl
@@ -30,4 +30,4 @@ requires:
   perl: 5.8.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+version: 0.02
