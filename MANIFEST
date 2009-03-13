@@ -1,4 +1,8 @@
 Changes
+inc/Algorithm/C3.pm
+inc/Any/Moose.pm
+inc/Class/C3.pm
+inc/Class/C3/next.pm
 inc/Module/Install.pm
 inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
@@ -10,6 +14,17 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/TestBase.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
+inc/Mouse.pm
+inc/Mouse/Meta/Attribute.pm
+inc/Mouse/Meta/Class.pm
+inc/Mouse/Meta/Method/Constructor.pm
+inc/Mouse/Meta/Method/Destructor.pm
+inc/Mouse/Meta/Role.pm
+inc/Mouse/Object.pm
+inc/Mouse/Util.pm
+inc/Mouse/Util/TypeConstraints.pm
+inc/MRO/Compat.pm
+inc/next.pm
 inc/Spiffy.pm
 inc/Test/Base.pm
 inc/Test/Base/Filter.pm

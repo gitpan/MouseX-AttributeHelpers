@@ -3,6 +3,7 @@ abstract: 'Extend your attribute interfaces'
 author:
   - 'NAKAGAWA Masaki <masaki@cpan.org>'
 build_requires:
+  Any::Moose: 0.05
   Test::Data::Scalar: 0
   Test::Deep: 0
   Test::More: 0
@@ -19,7 +20,6 @@ no_index:
     - inc
     - t
 recommends:
-  Any::Moose: 0.05
   Class::Method::Modifiers::Fast: 0
 requires:
   Class::Method::Modifiers: 0
@@ -30,4 +30,4 @@ requires:
   perl: 5.8.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.02
+version: 0.03
