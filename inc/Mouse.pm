@@ -1,32 +1,53 @@
 #line 1
 package Mouse;
+use 5.006_002;
+
 use strict;
 use warnings;
-use 5.006;
-use base 'Exporter';
 
-our $VERSION = '0.19';
+our $VERSION = '0.37';
+
+use Exporter;
 
 use Carp 'confess';
 use Scalar::Util 'blessed';
-use Mouse::Util;
 
-use Mouse::Meta::Attribute;
+use Mouse::Util qw(load_class is_class_loaded get_code_package not_supported);
+
+use Mouse::Meta::Module;
 use Mouse::Meta::Class;
+use Mouse::Meta::Role;
+use Mouse::Meta::Attribute;
 use Mouse::Object;
-use Mouse::Util::TypeConstraints;
+use Mouse::Util::TypeConstraints ();
 
-our @EXPORT = qw(extends has before after around override super blessed confess with);
+our @ISA = qw(Exporter);
 
-sub extends { Mouse::Meta::Class->initialize(caller)->superclasses(@_) }
+our @EXPORT = qw(
+    extends with
+    has
+    before after around
+    override super
+    augment  inner
+
+    blessed confess
+);
+
+our %is_removable = map{ $_ => undef } @EXPORT;
+delete $is_removable{blessed};
+delete $is_removable{confess};
+
+sub extends { Mouse::Meta::Class->initialize(scalar caller)->superclasses(@_) }
 
 sub has {
-    my $meta = Mouse::Meta::Class->initialize(caller);
-    $meta->add_attribute(@_);
+    my $meta = Mouse::Meta::Class->initialize(scalar caller);
+    my $name = shift;
+
+    $meta->add_attribute($_ => @_) for ref($name) ? @{$name} : $name;
 }
 
 sub before {
-    my $meta = Mouse::Meta::Class->initialize(caller);
+    my $meta = Mouse::Meta::Class->initialize(scalar caller);
 
     my $code = pop;
 
@@ -36,7 +57,7 @@ sub before {
 }
 
 sub after {
-    my $meta = Mouse::Meta::Class->initialize(caller);
+    my $meta = Mouse::Meta::Class->initialize(scalar caller);
 
     my $code = pop;
 
@@ -46,7 +67,7 @@ sub after {
 }
 
 sub around {
-    my $meta = Mouse::Meta::Class->initialize(caller);
+    my $meta = Mouse::Meta::Class->initialize(scalar caller);
 
     my $code = pop;
 
@@ -56,7 +77,7 @@ sub around {
 }
 
 sub with {
-    Mouse::Util::apply_all_roles((caller)[0], @_);
+    Mouse::Util::apply_all_roles(scalar(caller), @_);
 }
 
 our $SUPER_PACKAGE;
@@ -89,6 +110,37 @@ sub override {
     });
 }
 
+sub inner  { not_supported }
+sub augment{ not_supported }
+
+sub init_meta {
+    shift;
+    my %args = @_;
+
+    my $class = $args{for_class}
+                    or confess("Cannot call init_meta without specifying a for_class");
+    my $base_class = $args{base_class} || 'Mouse::Object';
+    my $metaclass  = $args{metaclass}  || 'Mouse::Meta::Class';
+
+    confess("The Metaclass $metaclass must be a subclass of Mouse::Meta::Class.")
+            unless $metaclass->isa('Mouse::Meta::Class');
+
+    # make a subtype for each Mouse class
+    Mouse::Util::TypeConstraints::class_type($class)
+        unless Mouse::Util::TypeConstraints::find_type_constraint($class);
+
+    my $meta = $metaclass->initialize($class);
+
+    $meta->add_method(meta => sub{
+        return $metaclass->initialize(ref($_[0]) || $_[0]);
+    });
+
+    $meta->superclasses($base_class)
+        unless $meta->superclasses;
+
+    return $meta;
+}
+
 sub import {
     my $class = shift;
 
@@ -112,13 +164,9 @@ sub import {
         return;
     }
 
-    my $meta = Mouse::Meta::Class->initialize($caller);
-    $meta->superclasses('Mouse::Object')
-        unless $meta->superclasses;
-
-    no strict 'refs';
-    no warnings 'redefine';
-    *{$caller.'::meta'} = sub { $meta };
+    $class->init_meta(
+        for_class  => $caller,
+    );
 
     if (@_) {
         __PACKAGE__->export_to_level( $level+1, $class, @_);
@@ -134,64 +182,25 @@ sub import {
 sub unimport {
     my $caller = caller;
 
-    no strict 'refs';
+    my $stash = do{
+        no strict 'refs';
+        \%{$caller . '::'}
+    };
+
     for my $keyword (@EXPORT) {
-        delete ${ $caller . '::' }{$keyword};
+        my $code;
+        if(exists $is_removable{$keyword}
+            && ($code = $caller->can($keyword))
+            && get_code_package($code) eq __PACKAGE__){
+
+            delete $stash->{$keyword};
+        }
     }
-}
-
-sub load_class {
-    my $class = shift;
-
-    if (ref($class) || !defined($class) || !length($class)) {
-        my $display = defined($class) ? $class : 'undef';
-        confess "Invalid class name ($display)";
-    }
-
-    return 1 if $class eq 'Mouse::Object';
-    return 1 if is_class_loaded($class);
-
-    (my $file = "$class.pm") =~ s{::}{/}g;
-
-    eval { CORE::require($file) };
-    confess "Could not load class ($class) because : $@" if $@;
-
-    return 1;
-}
-
-sub is_class_loaded {
-    my $class = shift;
-
-    return 0 if ref($class) || !defined($class) || !length($class);
-
-    # walk the symbol table tree to avoid autovififying
-    # \*{${main::}{"Foo::"}} == \*main::Foo::
-
-    my $pack = \*::;
-    foreach my $part (split('::', $class)) {
-        return 0 unless exists ${$$pack}{"${part}::"};
-        $pack = \*{${$$pack}{"${part}::"}};
-    }
-
-    # check for $VERSION or @ISA
-    return 1 if exists ${$$pack}{VERSION}
-             && defined *{${$$pack}{VERSION}}{SCALAR};
-    return 1 if exists ${$$pack}{ISA}
-             && defined *{${$$pack}{ISA}}{ARRAY};
-
-    # check for any method
-    foreach ( keys %{$$pack} ) {
-        next if substr($_, -2, 2) eq '::';
-        return 1 if defined *{${$$pack}{$_}}{CODE};
-    }
-
-    # fail
-    return 0;
 }
 
 1;
 
 __END__
 
-#line 447
+#line 486
 

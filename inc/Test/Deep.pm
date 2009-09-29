@@ -7,6 +7,8 @@ use Carp qw( confess );
 
 use Test::Deep::Cache;
 use Test::Deep::Stack;
+use Test::Deep::RegexpVersion;
+
 require overload;
 use Scalar::Util;
 
@@ -26,7 +28,8 @@ use vars qw(
 	$Snobby $Expects $DNE $DNE_ADDR $Shallow
 );
 
-$VERSION = '0.104';
+$VERSION = '0.106';
+$VERSION = eval $VERSION;
 
 require Exporter;
 @ISA = qw( Exporter );
@@ -353,7 +356,7 @@ sub wrap
 		{
 			$cmp = scalref($data);
 		}
-		elsif($] <= 5.010 ? ($base eq 'Regexp') : ($base eq 'REGEXP'))
+		elsif(($base eq 'Regexp') or ($base eq 'REGEXP'))
 		{
 			$cmp = regexpref($data);
 		}
@@ -378,7 +381,7 @@ sub class_base
 		my $reftype = Scalar::Util::reftype($val);
 
 
-		if ($] <= 5.010) {
+		if ($Test::Deep::RegexpVersion::OldStyle) {
 			if ($blessed eq "Regexp" and $reftype eq "SCALAR")
 			{
 				$reftype = "Regexp"

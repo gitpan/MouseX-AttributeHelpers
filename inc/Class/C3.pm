@@ -5,7 +5,7 @@ package Class::C3;
 use strict;
 use warnings;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 our $C3_IN_CORE;
 our $C3_XS;
@@ -29,7 +29,7 @@ BEGIN {
     }
 }
 
-# this is our global stash of both 
+# this is our global stash of both
 # MRO's and method dispatch tables
 # the structure basically looks like
 # this:
@@ -61,7 +61,7 @@ sub import {
     return if $TURN_OFF_C3;
     mro::set_mro($class, 'c3') if $C3_IN_CORE;
 
-    # make a note to calculate $class 
+    # make a note to calculate $class
     # during INIT phase
     $MRO{$class} = undef unless exists $MRO{$class};
 }
@@ -94,12 +94,12 @@ sub initialize {
 sub uninitialize {
     # why bother if we don't have anything ...
     %next::METHOD_CACHE = ();
-    return unless keys %MRO;    
+    return unless keys %MRO;
     if($C3_IN_CORE) {
         mro::set_mro($_, 'dfs') for keys %MRO;
     }
     else {
-        _remove_method_dispatch_tables();    
+        _remove_method_dispatch_tables();
         $_initialized = 0;
     }
 }
@@ -126,15 +126,15 @@ sub _calculate_method_dispatch_table {
     $MRO{$class} = { MRO => \@MRO };
     my $has_overload_fallback;
     my %methods;
-    # NOTE: 
+    # NOTE:
     # we do @MRO[1 .. $#MRO] here because it
     # makes no sense to interogate the class
-    # which you are calculating for. 
+    # which you are calculating for.
     foreach my $local (@MRO[1 .. $#MRO]) {
-        # if overload has tagged this module to 
+        # if overload has tagged this module to
         # have use "fallback", then we want to
-        # grab that value 
-        $has_overload_fallback = ${"${local}::()"} 
+        # grab that value
+        $has_overload_fallback = ${"${local}::()"}
             if !defined $has_overload_fallback && defined ${"${local}::()"};
         foreach my $method (grep { defined &{"${local}::$_"} } keys %{"${local}::"}) {
             # skip if already overriden in local class
@@ -144,17 +144,17 @@ sub _calculate_method_dispatch_table {
                 code => \&{"${local}::$method"}
             } unless exists $methods{$method};
         }
-    }    
+    }
     # now stash them in our %MRO table
-    $MRO{$class}->{methods} = \%methods; 
-    $MRO{$class}->{has_overload_fallback} = $has_overload_fallback;        
+    $MRO{$class}->{methods} = \%methods;
+    $MRO{$class}->{has_overload_fallback} = $has_overload_fallback;
 }
 
 sub _apply_method_dispatch_tables {
     return if $C3_IN_CORE;
     foreach my $class (keys %MRO) {
         _apply_method_dispatch_table($class);
-    }     
+    }
 }
 
 sub _apply_method_dispatch_table {
@@ -170,7 +170,7 @@ sub _apply_method_dispatch_table {
             ${"${class}::$method"} = $$orig if defined $$orig;
         }
         *{"${class}::$method"} = $MRO{$class}->{methods}->{$method}->{code};
-    }    
+    }
 }
 
 sub _remove_method_dispatch_tables {
@@ -184,19 +184,19 @@ sub _remove_method_dispatch_table {
     return if $C3_IN_CORE;
     my $class = shift;
     no strict 'refs';
-    delete ${"${class}::"}{"()"} if $MRO{$class}->{has_overload_fallback};    
+    delete ${"${class}::"}{"()"} if $MRO{$class}->{has_overload_fallback};
     foreach my $method (keys %{$MRO{$class}->{methods}}) {
         delete ${"${class}::"}{$method}
-            if defined *{"${class}::${method}"}{CODE} && 
-               (*{"${class}::${method}"}{CODE} eq $MRO{$class}->{methods}->{$method}->{code});       
+            if defined *{"${class}::${method}"}{CODE} &&
+               (*{"${class}::${method}"}{CODE} eq $MRO{$class}->{methods}->{$method}->{code});
     }
 }
 
 sub calculateMRO {
     my ($class, $merge_cache) = @_;
 
-    return Algorithm::C3::merge($class, sub { 
-        no strict 'refs'; 
+    return Algorithm::C3::merge($class, sub {
+        no strict 'refs';
         @{$_[0] . '::ISA'};
     }, $merge_cache);
 }

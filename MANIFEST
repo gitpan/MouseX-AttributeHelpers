@@ -3,6 +3,7 @@ inc/Algorithm/C3.pm
 inc/Any/Moose.pm
 inc/Class/C3.pm
 inc/Class/C3/next.pm
+inc/Class/Method/Modifiers/Fast.pm
 inc/Module/Install.pm
 inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
@@ -17,14 +18,16 @@ inc/Module/Install/WriteAll.pm
 inc/Mouse.pm
 inc/Mouse/Meta/Attribute.pm
 inc/Mouse/Meta/Class.pm
+inc/Mouse/Meta/Method/Accessor.pm
 inc/Mouse/Meta/Method/Constructor.pm
 inc/Mouse/Meta/Method/Destructor.pm
+inc/Mouse/Meta/Module.pm
 inc/Mouse/Meta/Role.pm
+inc/Mouse/Meta/TypeConstraint.pm
 inc/Mouse/Object.pm
 inc/Mouse/Util.pm
 inc/Mouse/Util/TypeConstraints.pm
 inc/MRO/Compat.pm
-inc/next.pm
 inc/Spiffy.pm
 inc/Test/Base.pm
 inc/Test/Base/Filter.pm
@@ -65,6 +68,7 @@ inc/Test/Deep/RegexpMatches.pm
 inc/Test/Deep/RegexpOnly.pm
 inc/Test/Deep/RegexpRef.pm
 inc/Test/Deep/RegexpRefOnly.pm
+inc/Test/Deep/RegexpVersion.pm
 inc/Test/Deep/ScalarRef.pm
 inc/Test/Deep/ScalarRefOnly.pm
 inc/Test/Deep/Set.pm

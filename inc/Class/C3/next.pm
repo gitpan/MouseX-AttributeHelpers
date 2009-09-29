@@ -1,6 +1,6 @@
 #line 1
 package  # hide me from PAUSE
-    next; 
+    next;
 
 use strict;
 use warnings;
@@ -17,7 +17,7 @@ sub method {
     my $class    = blessed($self) || $self;
     my $indirect = caller() =~ /^(?:next|maybe::next)$/;
     my $level = $indirect ? 2 : 1;
-     
+
     my ($method_caller, $label, @label);
     while ($method_caller = (caller($level++))[3]) {
       @label = (split '::', $method_caller);
@@ -29,25 +29,25 @@ sub method {
 
     my $method;
 
-    my $caller   = join '::' => @label;    
-    
+    my $caller   = join '::' => @label;
+
     $method = $METHOD_CACHE{"$class|$caller|$label"} ||= do {
-        
+
         my @MRO = Class::C3::calculateMRO($class);
-        
+
         my $current;
         while ($current = shift @MRO) {
             last if $caller eq $current;
         }
-        
+
         no strict 'refs';
         my $found;
         foreach my $class (@MRO) {
-            next if (defined $Class::C3::MRO{$class} && 
-                     defined $Class::C3::MRO{$class}{methods}{$label});          
+            next if (defined $Class::C3::MRO{$class} &&
+                     defined $Class::C3::MRO{$class}{methods}{$label});
             last if (defined ($found = *{$class . '::' . $label}{CODE}));
         }
-    
+
         $found;
     };
 
@@ -61,7 +61,7 @@ sub method {
 sub can { method($_[0]) }
 
 package  # hide me from PAUSE
-    maybe::next; 
+    maybe::next;
 
 use strict;
 use warnings;
