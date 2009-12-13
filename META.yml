@@ -23,15 +23,12 @@ no_index:
     - inc
     - t
     - xt
-recommends:
-  Class::Method::Modifiers::Fast: 0
 requires:
-  Class::Method::Modifiers: 0
   Filter::Util::Call: 0
-  Mouse: 0.37
+  Mouse: 0.40
   Mouse::Meta::Attribute: 0
   Mouse::Util::TypeConstraints: 0
-  perl: 5.8.1
+  perl: 5.6.2
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.04
+version: 0.05
