@@ -1,11 +1,4 @@
 package MouseX::AttributeHelpers::Counter;
-
-{
-    package # hide from PAUSE
-        Mouse::Meta::Attribute::Custom::Counter;
-    sub register_implementation { 'MouseX::AttributeHelpers::Counter' }
-}
-
 use Mouse;
 
 extends 'MouseX::AttributeHelpers::Base';
@@ -48,8 +41,8 @@ sub helper_type    { 'Num' }
 sub helper_default { 0 }
 
 no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__END__
 
 =head1 NAME
 

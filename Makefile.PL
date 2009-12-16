@@ -1,6 +1,16 @@
+sub readme_from {}
+sub readme_markdown_from {}
+sub auto_set_repository {}
+sub author_tests {}
+sub author_requires {}
+
 use inc::Module::Install;
 name 'MouseX-AttributeHelpers';
 all_from 'lib/MouseX/AttributeHelpers.pm';
+
+readme_from 'lib/MouseX/AttributeHelpers.pm';
+readme_markdown_from 'lib/MouseX/AttributeHelpers.pm';
+auto_set_repository;
 
 requires 'Mouse' => '0.40';
 requires 'Mouse::Meta::Attribute';
@@ -12,9 +22,15 @@ test_requires 'Test::More';
 test_requires 'Test::UseAllModules';
 test_requires 'Test::Deep';
 test_requires 'Test::Data::Scalar';
-author_tests 'xt';
 
-use_test_base;
+author_tests 'xt';
+author_requires 'Test::Pod';
+author_requires 'Test::Pod::Coverage';
+author_requires 'Test::Spelling';
+author_requires 'ShipIt';
+author_requires 'ShipIt::Step::Manifest';
+author_requires 'ShipIt::Step::DistClean';
+author_requires 'ShipIt::Step::Twitter';
 
 include_deps 'Test::More';
 include_deps 'Test::UseAllModules';

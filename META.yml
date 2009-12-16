@@ -24,11 +24,11 @@ no_index:
     - t
     - xt
 requires:
-  Filter::Util::Call: 0
   Mouse: 0.40
   Mouse::Meta::Attribute: 0
   Mouse::Util::TypeConstraints: 0
   perl: 5.6.2
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.05
+  repository: git://github.com/masaki/mousex-attributehelpers.git
+version: 0.06

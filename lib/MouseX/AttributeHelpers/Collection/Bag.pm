@@ -1,11 +1,4 @@
 package MouseX::AttributeHelpers::Collection::Bag;
-
-{
-    package # hide from PAUSE
-        Mouse::Meta::Attribute::Custom::Collection::Bag;
-    sub register_implementation { 'MouseX::AttributeHelpers::Collection::Bag' }
-}
-
 use Mouse;
 use Mouse::Util::TypeConstraints;
 use MouseX::AttributeHelpers::Collection::ImmutableHash;
@@ -40,8 +33,9 @@ sub helper_type    { 'Bag' }
 sub helper_default { sub { +{} } }
 
 no Mouse;
-
-1;
+no Mouse::Util::TypeConstraints;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__END__
 
 =head1 NAME
 

@@ -1,17 +1,38 @@
 package MouseX::AttributeHelpers;
 
 use 5.006_002;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
-use MouseX::AttributeHelpers::Counter;
-use MouseX::AttributeHelpers::Number;
-use MouseX::AttributeHelpers::String;
-use MouseX::AttributeHelpers::Bool;
-use MouseX::AttributeHelpers::Collection::List;
-use MouseX::AttributeHelpers::Collection::Array;
-use MouseX::AttributeHelpers::Collection::ImmutableHash;
-use MouseX::AttributeHelpers::Collection::Hash;
-use MouseX::AttributeHelpers::Collection::Bag;
+use Mouse::Util qw(load_class);
+
+# These submodules are automatically loaded by register_implementation()
+#use MouseX::AttributeHelpers::Counter;
+#use MouseX::AttributeHelpers::Number;
+#use MouseX::AttributeHelpers::String;
+#use MouseX::AttributeHelpers::Bool;
+#use MouseX::AttributeHelpers::Collection::List;
+#use MouseX::AttributeHelpers::Collection::Array;
+#use MouseX::AttributeHelpers::Collection::ImmutableHash;
+#use MouseX::AttributeHelpers::Collection::Hash;
+#use MouseX::AttributeHelpers::Collection::Bag;
+
+# aliases
+
+foreach my $helper(qw(
+    Bool Counter Number String
+    Collection::List Collection::Array Collection::Bag
+    Collection::Hash Collection::ImmutableHash
+)){
+    my $from = 'MouseX::AttributeHelpers::' . $helper;
+    my $to   = 'Mouse::Meta::Attribute::Custom::'      . $helper;
+
+    my $alias = sub {
+        load_class($from);
+        return $from;
+    };
+    no strict 'refs';
+    *{$to . '::register_implementation'} = $alias;
+}
 
 
 1;
@@ -137,6 +158,8 @@ it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
+L<Mouse>
+
 L<MouseX::AttributeHelpers::Counter>,
 L<MouseX::AttributeHelpers::Number>,
 L<MouseX::AttributeHelpers::String>,
@@ -146,5 +169,7 @@ L<MouseX::AttributeHelpers::Collection::Array>,
 L<MouseX::AttributeHelpers::Collection::ImmutableHash>,
 L<MouseX::AttributeHelpers::Collection::Hash>,
 L<MouseX::AttributeHelpers::Collection::Bag>
+
+L<MooseX::AttributeHelpers>
 
 =cut

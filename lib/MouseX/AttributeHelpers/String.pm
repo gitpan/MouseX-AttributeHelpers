@@ -1,11 +1,4 @@
 package MouseX::AttributeHelpers::String;
-
-{
-    package # hide from PAUSE
-        Mouse::Meta::Attribute::Custom::String;
-    sub register_implementation { 'MouseX::AttributeHelpers::String' }
-}
-
 use Mouse;
 
 extends 'MouseX::AttributeHelpers::Base';
@@ -57,8 +50,8 @@ sub helper_type    { 'Str' }
 sub helper_default { '' }
 
 no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__END__
 
 =head1 NAME
 

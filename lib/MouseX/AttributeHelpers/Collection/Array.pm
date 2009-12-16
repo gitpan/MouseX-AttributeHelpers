@@ -1,11 +1,4 @@
 package MouseX::AttributeHelpers::Collection::Array;
-
-{
-    package # hide from PAUSE
-        Mouse::Meta::Attribute::Custom::Collection::Array;
-    sub register_implementation { 'MouseX::AttributeHelpers::Collection::Array' }
-}
-
 use Mouse;
 use MouseX::AttributeHelpers::Collection::List;
 
@@ -66,8 +59,8 @@ has '+method_constructors' => (
 sub helper_type { 'ArrayRef' }
 
 no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__END__
 
 =head1 NAME
 

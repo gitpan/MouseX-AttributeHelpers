@@ -1,11 +1,4 @@
 package MouseX::AttributeHelpers::Collection::Hash;
-
-{
-    package # hide from PAUSE
-        Mouse::Meta::Attribute::Custom::Collection::Hash;
-    sub register_implementation { 'MouseX::AttributeHelpers::Collection::Hash' }
-}
-
 use Mouse;
 use MouseX::AttributeHelpers::Collection::ImmutableHash;
 
@@ -49,8 +42,8 @@ has '+method_constructors' => (
 sub helper_type { 'HashRef' }
 
 no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__END__
 
 =head1 NAME
 

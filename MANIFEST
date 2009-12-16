@@ -1,5 +1,6 @@
 Changes
 inc/Module/Install.pm
+inc/Module/Install/AuthorRequires.pm
 inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -7,14 +8,12 @@ inc/Module/Install/Fetch.pm
 inc/Module/Install/Include.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
-inc/Module/Install/TestBase.pm
+inc/Module/Install/ReadmeFromPod.pm
+inc/Module/Install/ReadmeMarkdownFromPod.pm
+inc/Module/Install/Repository.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
-inc/Spiffy.pm
-inc/Test/Base.pm
-inc/Test/Base/Filter.pm
-inc/Test/Builder.pm
-inc/Test/Builder/Module.pm
+inc/Pod/Markdown.pm
 inc/Test/Data/Scalar.pm
 inc/Test/Deep.pm
 inc/Test/Deep/All.pm
@@ -57,7 +56,6 @@ inc/Test/Deep/Set.pm
 inc/Test/Deep/Shallow.pm
 inc/Test/Deep/Stack.pm
 inc/Test/Deep/String.pm
-inc/Test/More.pm
 inc/Test/UseAllModules.pm
 lib/MouseX/AttributeHelpers.pm
 lib/MouseX/AttributeHelpers/Base.pm
@@ -74,6 +72,7 @@ Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
+README.mkdn
 t/00_compile.t
 t/01_counter.t
 t/02_number.t

@@ -1,5 +1,4 @@
 package MouseX::AttributeHelpers::Base;
-
 use Mouse;
 
 extends 'Mouse::Meta::Attribute';
@@ -46,6 +45,7 @@ around 'install_accessors' => sub {
             };
 
             $metaclass->add_method($aliased => $method);
+            $attr->associate_method($aliased);
         }
     }
 
@@ -60,6 +60,7 @@ around 'install_accessors' => sub {
         }
 
         $metaclass->add_method($aliased => $constructor->($attr, $name));
+        $attr->associate_method($aliased);
     }
 
     return;
@@ -102,9 +103,11 @@ sub _make_curry_with_sub {
     };
 }
 
+# Mouse does not support proper imetaclass constructor replacement,
+# so we must set inline_constructor false
 no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+__END__
 
 =head1 NAME
 
