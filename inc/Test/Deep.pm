@@ -28,7 +28,7 @@ use vars qw(
 	$Snobby $Expects $DNE $DNE_ADDR $Shallow
 );
 
-$VERSION = '0.106';
+$VERSION = '0.108';
 $VERSION = eval $VERSION;
 
 require Exporter;
@@ -50,35 +50,35 @@ $DNE_ADDR = Scalar::Util::refaddr($DNE);
 
 # if no sub name is supplied then we use the package name in lower case
 my %constructors = (
-	Number => "num",
-	Methods => "",
-	ListMethods => "",
-	String => "str",
-	Boolean => "bool",
-	ScalarRef => "scalref",
-	ScalarRefOnly => "",
-	Array => "",
-	ArrayEach => "array_each",
-	ArrayElementsOnly => "",
-	Hash => "",
-	HashEach => "hash_each",
-	Regexp => "re",
-	RegexpMatches => "",
-	RegexpOnly => "",
-	RegexpRef => "",
-	Ignore => "",
-	Shallow => "",
-	Any => "",
-	All => "",
-	Isa => "Isa",
-	RegexpRefOnly => "",
-	RefType => "",
-	Blessed => "",
-	ArrayLength => "",
-	ArrayLengthOnly => "",
-	HashKeys => "",
-	HashKeysOnly => "",
-	Code => "",
+  All               => "",
+  Any               => "",
+  Array             => "",
+  ArrayEach         => "array_each",
+  ArrayElementsOnly => "",
+  ArrayLength       => "",
+  ArrayLengthOnly   => "",
+  Blessed           => "",
+  Boolean           => "bool",
+  Code              => "",
+  Hash              => "",
+  HashEach          => "hash_each",
+  HashKeys          => "",
+  HashKeysOnly      => "",
+  Ignore            => "",
+  Isa               => "Isa",
+  ListMethods       => "",
+  Methods           => "",
+  Number            => "num",
+  RefType           => "",
+  Regexp            => "re",
+  RegexpMatches     => "",
+  RegexpOnly        => "",
+  RegexpRef         => "",
+  RegexpRefOnly     => "",
+  ScalarRef         => "scalref",
+  ScalarRefOnly     => "",
+  Shallow           => "",
+  String            => "str",
 );
 
 while (my ($pkg, $name) = each %constructors)
@@ -256,6 +256,19 @@ sub render_val
 sub descend
 {
 	my ($d1, $d2) = @_;
+
+	if (!ref $d1 and !ref $d2)
+	{
+    # Shortcut comparison for the non-reference case.
+    if (defined $d1)
+    {
+      return 1 if defined $d2 and $d1 eq $d2;
+    }
+    else
+    {
+      return 1 if !defined $d2;
+    }
+	}
 
 	if (! $Expects and ref($d1) and UNIVERSAL::isa($d1, "Test::Deep::Cmp"))
 	{
